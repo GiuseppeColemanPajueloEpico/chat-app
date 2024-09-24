@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Locale con Salvataggio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .chat-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .chat-messages ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .chat-messages li {
+            padding: 10px;
+            background-color: #f4f4f4;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-messages" id="chat-messages">
+        <ul id="messages-list"></ul>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="chat-input" placeholder="Scrivi un messaggio...">
+        <button onclick="sendMessage()">Invia</button>
+    </div>
+</div>
+
+<script>
+    // Funzione per salvare i messaggi nel LocalStorage
+    function saveMessages() {
+        const messages = document.getElementById('messages-list').innerHTML;
+        localStorage.setItem('chatMessages', messages);
+    }
+
+    // Funzione per caricare i messaggi dal LocalStorage quando la pagina si carica
+    function loadMessages() {
+        const savedMessages = localStorage.getItem('chatMessages');
+        if (savedMessages) {
+            document.getElementById('messages-list').innerHTML = savedMessages;
+        }
+    }
+
+    // Carica i messaggi salvati al caricamento della pagina
+    window.onload = loadMessages;
+
+    // Funzione per inviare un messaggio
+    function sendMessage() {
+        const inputField = document.getElementById('chat-input');
+        const message = inputField.value.trim();
+
+        if (message !== '') {
+            // Aggiunge il nuovo messaggio alla lista
+            const messagesList = document.getElementById('messages-list');
+            const newMessage = document.createElement('li');
+            newMessage.textContent = message;
+            messagesList.appendChild(newMessage);
+
+            // Pulisce il campo di input
+            inputField.value = '';
+
+            // Scorre automaticamente verso l'ultimo messaggio
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Salva i messaggi aggiornati nel LocalStorage
+            saveMessages();
+        }
+    }
+
+    // Aggiunge la possibilità di inviare il messaggio premendo "Enter"
+    document.getElementById('chat-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>
